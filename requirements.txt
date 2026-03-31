@@ -1,0 +1,8 @@
+django
+gunicorn
+whitenoise
+django-cors-headers
+djangorestframework
+drf-spectacular
+python-dotenv
+pillow
