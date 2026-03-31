@@ -9,10 +9,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-unsafe-key-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://osonuyjoy-backend.onrender.com",
-]
-
 # Xavfsizlik uchun localhost va production domenlarini qo'shdik
 ALLOWED_HOSTS = [
     h.strip()
@@ -22,6 +18,10 @@ ALLOWED_HOSTS = [
     ).split(",")
     if h.strip()
 ]
+# Render har deployda yangi subdomain berishi mumkin; avtomatik qo'shamiz.
+render_host = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "").strip()
+if render_host and render_host not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(render_host)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -149,6 +149,10 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+if render_host:
+    rh = f"https://{render_host}"
+    if rh not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(rh)
 
 # Frontend'dan so'rovlar kelishi uchun
 _cors = os.environ.get("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173,https://osonuyjoy-backend.onrender.com")
